@@ -6,7 +6,7 @@ pipeline {
   }
   environment {
     DOCKERHUB_CREDENTIALS = credentials('docker_hub_credentials')
-    DEV_EC2_SERVER = '13.233.98.186'
+    DEV_EC2_SERVER = '13.234.67.114'
     DEV_EC2_USER = 'ec2-user'            
   }
 
@@ -23,7 +23,7 @@ pipeline {
     }
     stage('Clone SoureCode') {
       steps {
-        git branch: 'main', url: 'https://github.com/sreenutech18/spring-boot-sample-app.git'
+        git branch: 'main', url: 'https://github.com/mintobros/spring-boot-sample-app-main-.git'
 
       }
     }
@@ -55,7 +55,7 @@ pipeline {
     stage("SonarQube analysis") {
 	    steps {
 		  
-		sh 'mvn sonar:sonar -Dsonar.host.url=http://13.233.98.186:9000/ -Dsonar.login=squ_a386f75c853fbb07c9fefa823f9cc8c5e906e3c4'
+		sh 'mvn sonar:sonar -Dsonar.host.url=http://13.234.67.114:9000/ -Dsonar.login=squ_4436e624a007192bf52ab2cf614adea153e8af13'
 		       
 	      }
       }
@@ -66,7 +66,7 @@ pipeline {
 
       steps {
         sh 'docker build -t spring-boot-sample-app:latest .'
-        sh 'docker tag spring-boot-sample-app sreenivas18/spring-boot-sample-app:latest'
+        sh 'docker tag spring-boot-sample-app nehal9984/spring-boot-sample-app:latest'
       
       }
     }
@@ -83,7 +83,7 @@ pipeline {
 
     stage('Push Image to dockerHUb') {
       steps {
-        sh 'docker push sreenivas18/spring-boot-sample-app:latest'
+        sh 'docker push nehal9984/spring-boot-sample-app:latest'
       }
       post {
         always {
@@ -100,8 +100,8 @@ pipeline {
         script {
           sshagent(credentials: ['awscred']) {
           sh "ssh -o StrictHostKeyChecking=no ${DEV_EC2_USER}@${DEV_EC2_SERVER} 'docker stop spring-boot-sample-app-dev || true && docker rm spring-boot-sample-app-dev || true'"
-      sh "ssh -o StrictHostKeyChecking=no ${DEV_EC2_USER}@${DEV_EC2_SERVER} 'docker pull sreenivas18/spring-boot-sample-app'"
-          sh "ssh -o StrictHostKeyChecking=no ${DEV_EC2_USER}@${DEV_EC2_SERVER} 'docker run --name spring-boot-sample-app-dev -d -p 8081:8081 sreenivas18/spring-boot-sample-app'"
+      sh "ssh -o StrictHostKeyChecking=no ${DEV_EC2_USER}@${DEV_EC2_SERVER} 'docker pull nehal9984/spring-boot-sample-app'"
+          sh "ssh -o StrictHostKeyChecking=no ${DEV_EC2_USER}@${DEV_EC2_SERVER} 'docker run --name spring-boot-sample-app-dev -d -p 8081:8081 nehal9984/spring-boot-sample-app'"
           }
         }
       }
@@ -116,8 +116,8 @@ pipeline {
                if(userInput == true) {
                     sshagent(credentials: ['awscred']) {
                       sh "ssh -o StrictHostKeyChecking=no ${DEV_EC2_USER}@${DEV_EC2_SERVER} 'docker stop spring-boot-sample-app-test || true && docker rm spring-boot-sample-app-test || true'"
-                      sh "ssh -o StrictHostKeyChecking=no ${DEV_EC2_USER}@${DEV_EC2_SERVER} 'docker pull sreenivas18/spring-boot-sample-app'"
-                      sh "ssh -o StrictHostKeyChecking=no ${DEV_EC2_USER}@${DEV_EC2_SERVER} 'docker run --name spring-boot-sample-app-test -d -p 8082:8081 sreenivas18/spring-boot-sample-app'"
+                      sh "ssh -o StrictHostKeyChecking=no ${DEV_EC2_USER}@${DEV_EC2_SERVER} 'docker pull nehal9984/spring-boot-sample-app'"
+                      sh "ssh -o StrictHostKeyChecking=no ${DEV_EC2_USER}@${DEV_EC2_SERVER} 'docker run --name spring-boot-sample-app-test -d -p 8082:8081 nehal9984/spring-boot-sample-app'"
                     }
                 } else {
                     // not do action
