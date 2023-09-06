@@ -23,7 +23,7 @@ pipeline {
     }
     stage('Clone SoureCode') {
       steps {
-        git branch: 'main', url: 'https://github.com/mintobros/spring-boot-sample-app.git'
+        git branch: 'master', url: 'https://github.com/mintobros/spring-boot-sample-app.git'
 
       }
     }
